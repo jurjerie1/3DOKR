@@ -10,13 +10,16 @@ option_a = os.getenv('OPTION_A', "Cats")
 option_b = os.getenv('OPTION_B', "Dogs")
 hostname = socket.gethostname()
 
+#Permet de récupérer l'adresse de la machine en question
+Redis_host = os.environ.get('REDIS_HOST')
+
 app = Flask(__name__)
 
 app.logger.setLevel(logging.INFO)
 
 def get_redis():
     if not hasattr(Flask, 'redis'):
-        Flask.redis = Redis(host="localhost", db=0, socket_timeout=5)
+        Flask.redis = Redis(host=Redis_host, db=0, socket_timeout=5)
     return Flask.redis
 
 @app.route("/", methods=['POST', 'GET'])
