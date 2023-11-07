@@ -1,8 +1,7 @@
+version: '3'
 services:
   postgresql:
     image: postgres:9.6-alpine
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -12,7 +11,11 @@ services:
     networks:
       - result
       - link-vote-result
-
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
   result:
     build: ./result
     ports:
@@ -24,6 +27,11 @@ services:
       - worker
     networks:
       - result
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   worker:
     build: ./worker
@@ -32,6 +40,11 @@ services:
       - redis
     networks:
       - link-vote-result
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:worker/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   vote:
     build: ./vote
@@ -43,16 +56,24 @@ services:
       - redis
     networks:
       - vote
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   redis:
     image: redis:alpine
-    ports:
-      - "6379:6379"
     volumes:
       - ./redis-data:/data
     networks:
       - vote
       - link-vote-result
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 networks:
   vote:
