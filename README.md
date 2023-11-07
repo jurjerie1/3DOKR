@@ -85,7 +85,7 @@ Nous avons :
 2. Rajouter pour chaque partie de l'application un replica (construction de plusieurs instances d'un conteneur Docker) :
 ```yaml
 deploy:
-      replicas: 1* permet de dire si il est répliqué au x max* 
+      replicas: 1
       placement:
         constraints:
           - node.role == worker
@@ -100,5 +100,5 @@ Pour lancer le Swarm il faut :
 docker stack deploy -c compose-swarm.yaml voting-app
 ```
 ## Contributeurs
-- [https://github.com/jurjerie] (Pierre Van-Maele)
+- [https://github.com/jurjerie] (Pierre Van Maele)
 - [https://github.com/maddogos] (Léonard Trève)
