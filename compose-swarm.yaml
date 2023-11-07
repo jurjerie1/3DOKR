@@ -30,10 +30,15 @@ services:
     ports:
       - "8081:8888"
     deploy:
-      replicas: 1
+      replicas: 2
       placement:
         constraints:
           - node.role == worker
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   worker:
     image: jurjerie/voting-app-worker
@@ -43,10 +48,15 @@ services:
     networks:
       - link-vote-result
     deploy:
-      replicas: 1
+      replicas: 2
       placement:
         constraints:
           - node.role == worker
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   vote:
     image: jurjerie/voting-app-vote
@@ -59,10 +69,15 @@ services:
     ports:
       - "8080:8080"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         constraints:
-          -  node.role == worker
+          - node.role == worker
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   redis:
     image: redis:alpine
@@ -76,6 +91,11 @@ services:
       placement:
         constraints:
           - node.role == worker
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 networks:
   vote:
