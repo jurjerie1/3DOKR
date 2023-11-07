@@ -16,7 +16,7 @@ namespace Worker
         {
             try
             {
-                // ajout de postgresql et redis pour retrouver leur hote
+                // ajout de postgresql et redis pour retrouver leur hote / Modification du code source
                 var pgsql = OpenDbConnection("Server="+"postgresql"+";Username=postgres;Password=postgres;");
                 var redisConn = OpenRedisConnection("redis");
                 var redis = redisConn.GetDatabase();
